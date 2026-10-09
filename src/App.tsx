@@ -36,9 +36,12 @@ function Reveal({
   )
 }
 
+const SECTION_IDS = navLinks.map((l) => l.href.replace('#', ''))
+
 function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState('')
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -46,6 +49,41 @@ function Nav() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  useEffect(() => {
+    const sections = SECTION_IDS
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[]
+    if (!sections.length) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+        if (visible[0]?.target.id) {
+          setActiveSection(visible[0].target.id)
+        }
+      },
+      { rootMargin: '-40% 0px -50% 0px', threshold: [0, 0.15, 0.4] },
+    )
+    sections.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [open])
 
   return (
     <header className={`nav${scrolled || open ? ' scrolled' : ''}${open ? ' open' : ''}`}>
@@ -56,13 +94,17 @@ function Nav() {
         <ul className="nav-links">
           {navLinks.map((link) => (
             <li key={link.href}>
-              <a href={link.href} onClick={() => setOpen(false)}>
+              <a
+                href={link.href}
+                className={activeSection === link.href.slice(1) ? 'active' : undefined}
+                onClick={() => setOpen(false)}
+              >
                 {link.label}
               </a>
             </li>
           ))}
         </ul>
-        <a className="nav-cta" href="#contact">
+        <a className="nav-cta" href="#contact" onClick={() => setOpen(false)}>
           Let&apos;s talk
         </a>
         <button
@@ -134,6 +176,16 @@ function Hero() {
             Get in touch
           </a>
         </motion.div>
+        <motion.a
+          className="hero-scroll"
+          href="#about"
+          aria-label="Scroll to about section"
+          initial={reduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.65 }}
+        >
+          <span>Scroll</span>
+        </motion.a>
         <motion.div
           className="hero-meta"
           initial={reduce ? false : { opacity: 0 }}
@@ -155,11 +207,69 @@ function Hero() {
   )
 }
 
+function ContactPanel() {
+  const [copied, setCopied] = useState(false)
+
+  async function copyEmail() {
+    try {
+      await navigator.clipboard.writeText(profile.email)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2000)
+    } catch {
+      window.location.href = `mailto:${profile.email}`
+    }
+  }
+
+  return (
+    <section className="section" id="contact">
+      <div className="container contact-panel">
+        <Reveal>
+          <p className="eyebrow">Contact</p>
+          <h2>Let&apos;s build the next AI system.</h2>
+          <p>
+            Open to roles and collaborations in Generative AI, agent platforms, and
+            fullstack product engineering.
+          </p>
+        </Reveal>
+        <Reveal delay={0.1} className="contact-links">
+          <button type="button" className="contact-link contact-copy" onClick={copyEmail}>
+            <span>{profile.email}</span>
+            <span>{copied ? 'Copied' : 'Copy email'}</span>
+          </button>
+          <a className="contact-link" href={`mailto:${profile.email}`}>
+            <span>Send a message</span>
+            <span>Email</span>
+          </a>
+          <a className="contact-link" href={profile.phoneHref}>
+            <span>{profile.phone}</span>
+            <span>Phone</span>
+          </a>
+          {profile.socials
+            .filter((s) => s.label !== 'Email')
+            .map((s) => (
+              <a
+                key={s.label}
+                className="contact-link"
+                href={s.href}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span>{s.label}</span>
+                <span>Open</span>
+              </a>
+            ))}
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
 export default function App() {
   return (
     <>
+      <a className="skip-link" href="#main">Skip to content</a>
       <Nav />
-      <main>
+      <main id="main">
         <Hero />
 
         <section className="section" id="about">
@@ -295,42 +405,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section" id="contact">
-          <div className="container contact-panel">
-            <Reveal>
-              <p className="eyebrow">Contact</p>
-              <h2>Let&apos;s build the next AI system.</h2>
-              <p>
-                Open to roles and collaborations in Generative AI, agent
-                platforms, and fullstack product engineering.
-              </p>
-            </Reveal>
-            <Reveal delay={0.1} className="contact-links">
-              <a className="contact-link" href={`mailto:${profile.email}`}>
-                <span>{profile.email}</span>
-                <span>Email</span>
-              </a>
-              <a className="contact-link" href={profile.phoneHref}>
-                <span>{profile.phone}</span>
-                <span>Phone</span>
-              </a>
-              {profile.socials
-                .filter((s) => s.label !== 'Email')
-                .map((s) => (
-                  <a
-                    key={s.label}
-                    className="contact-link"
-                    href={s.href}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <span>{s.label}</span>
-                    <span>Open</span>
-                  </a>
-                ))}
-            </Reveal>
-          </div>
-        </section>
+        <ContactPanel />
       </main>
 
       <footer className="footer">

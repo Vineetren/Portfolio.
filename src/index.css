@@ -37,6 +37,37 @@ html {
   scroll-behavior: smooth;
 }
 
+.section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space);
+  top: 0.75rem;
+  z-index: 100;
+  padding: 0.5rem 0.85rem;
+  background: var(--ink);
+  color: #f5faf8;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transform: translateY(-150%);
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 body {
   min-height: 100vh;
   overflow-x: hidden;
@@ -163,8 +194,13 @@ button {
   transition: color 0.2s ease;
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-links a.active {
   color: var(--accent);
+}
+
+.nav-links a.active {
+  font-weight: 500;
 }
 
 .nav-cta {
@@ -373,6 +409,47 @@ button {
   display: inline-block;
 }
 
+.hero-scroll {
+  position: absolute;
+  right: var(--space);
+  bottom: 2.5rem;
+  z-index: 2;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.hero-scroll::after {
+  content: '';
+  width: 1px;
+  height: 2.5rem;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  animation: scroll-pulse 2s ease-in-out infinite;
+}
+
+.hero-scroll:hover {
+  color: var(--accent-deep);
+}
+
+@keyframes scroll-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scaleY(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
 /* —— About —— */
 .about-grid {
   display: grid;
@@ -424,6 +501,19 @@ button {
   gap: clamp(1.5rem, 4vw, 2.5rem) clamp(2rem, 5vw, 3.5rem);
 }
 
+.skill-block {
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.4);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.skill-block:hover {
+  border-color: rgba(15, 122, 110, 0.35);
+  box-shadow: 0 12px 40px var(--accent-glow);
+  transform: translateY(-2px);
+}
+
 .skill-block h3 {
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -444,20 +534,22 @@ button {
 }
 
 .skill-list li {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: var(--ink-soft);
-  padding: 0.35rem 0;
+  padding: 0.4rem 0.7rem;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.skill-list li:hover {
+  border-color: rgba(15, 122, 110, 0.4);
+  color: var(--accent-deep);
 }
 
 .skill-list li::before {
-  content: '';
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  margin-right: 0.55rem;
-  margin-bottom: 0.12rem;
-  background: var(--warm);
-  vertical-align: middle;
+  content: none;
 }
 
 /* —— Experience —— */
@@ -566,7 +658,15 @@ button {
 }
 
 .impact-item {
-  padding: 0.5rem 0;
+  padding: 1.25rem 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.12);
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.impact-item:hover {
+  border-color: rgba(126, 217, 200, 0.35);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .impact-item strong {
@@ -669,6 +769,18 @@ button {
   padding-left: 0.35rem;
 }
 
+.contact-copy {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.contact-copy span:last-child {
+  color: var(--accent-deep);
+}
+
 .contact-link span:last-child {
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -724,6 +836,17 @@ button {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll::after {
+    animation: none;
+  }
+
+  .hero-atmosphere .orb-a,
+  .hero-atmosphere .orb-b {
+    animation: none;
+  }
+}
+
 @media (max-width: 720px) {
   .nav-links,
   .nav-cta {
@@ -767,5 +890,9 @@ button {
   .hero {
     align-items: center;
     padding-top: 6.5rem;
+  }
+
+  .hero-scroll {
+    display: none;
   }
 }
