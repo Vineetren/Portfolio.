@@ -1,9 +1,11 @@
+import { publicUrl } from '../publicUrl'
+
 const resumeUrl =
   'https://drive.google.com/file/d/1cMnRWreq7c_usZPFLT37_PTSsmMkDszJ/view?usp=drive_link'
 
 export const profile = {
   name: 'Vineet Joshi',
-  portrait: '/portrait.png',
+  portrait: publicUrl('portrait.png'),
   portraitAlt: 'Portrait of Vineet Joshi',
   title: 'AI Engineer',
   tagline:

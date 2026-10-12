@@ -15,13 +15,14 @@ import {
   setAssistantEngaged,
   type AssistantLook,
 } from './assistantMaterials'
+import { publicUrl } from '../../publicUrl'
 import {
   fitCameraToBounds,
   getSkinnedMeshBounds,
   normalizeAssistantHeight,
 } from './frameModel'
 
-const MODEL = '/models/chappie/chappie_anim.glb'
+const MODEL = publicUrl('models/chappie/chappie_anim.glb')
 
 const VIEW_PROFILES = {
   default: { targetHeight: 1.75, frameMargin: 1.52 },
