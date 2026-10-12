@@ -23,8 +23,48 @@
       rel="stylesheet"
     />
     <title>Vineet Joshi — AI Fullstack Engineer</title>
+    <style>
+      #app-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: grid;
+        place-items: center;
+        background: #03050c;
+        overflow: hidden;
+        transition: opacity 0.55s ease, visibility 0.55s ease;
+      }
+      #app-loader.app-loader--out {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      html.app-loading body {
+        overflow: hidden;
+      }
+    </style>
   </head>
-  <body>
+  <body class="app-loading">
+    <div id="app-loader" role="status" aria-live="polite" aria-label="Loading portfolio and agent">
+      <div class="app-loader-grid" aria-hidden="true"></div>
+      <div class="app-loader-scan" aria-hidden="true"></div>
+      <div class="app-loader-glow" aria-hidden="true"></div>
+      <div class="app-loader-panel">
+        <div class="app-loader-ring-wrap">
+          <svg class="app-loader-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="app-loader-ring-bg" cx="60" cy="60" r="52" />
+            <circle class="app-loader-ring-fg" id="app-loader-ring" cx="60" cy="60" r="52" />
+          </svg>
+          <span class="app-loader-percent" id="app-loader-percent">0%</span>
+        </div>
+        <p class="app-loader-brand">VINEET&nbsp;JOSHI</p>
+        <p class="app-loader-sub">CYBER WORKSPACE · AGENT CORE</p>
+        <p class="app-loader-status" id="app-loader-status">INITIALIZING</p>
+        <div class="app-loader-track" aria-hidden="true">
+          <div class="app-loader-fill" id="app-loader-fill"></div>
+        </div>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

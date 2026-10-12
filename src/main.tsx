@@ -1,16 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
-import { publicUrl } from './publicUrl'
+import { waitForInitialReady } from './boot'
 import './index.css'
 
-document.documentElement.style.setProperty(
-  '--workspace-bg',
-  `url(${publicUrl('cyberpunk-workspace.png')})`,
-)
+const root = createRoot(document.getElementById('root')!)
 
-createRoot(document.getElementById('root')!).render(
+root.render(
   <StrictMode>
     <App />
   </StrictMode>,
 )
+
+void waitForInitialReady()

@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import { getAgentPreloadPromise } from '../../agentPreload'
 import { SectionScrollLink } from '../SectionScrollLink'
 import { agentSection } from '../../data/content'
 
@@ -38,20 +39,13 @@ export function AgentSection() {
   const [loadScene, setLoadScene] = useState(false)
 
   useEffect(() => {
-    const el = rootRef.current
-    if (!el) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setLoadScene(true)
-          observer.disconnect()
-        }
-      },
-      { rootMargin: '200px 0px', threshold: 0.05 },
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
+    let cancelled = false
+    void getAgentPreloadPromise().then(() => {
+      if (!cancelled) setLoadScene(true)
+    })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   return (

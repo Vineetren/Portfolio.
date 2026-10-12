@@ -20,6 +20,7 @@
   --font-mono: 'JetBrains Mono', monospace;
   --space: clamp(1rem, 2.5vw, 2rem);
   --max: 1120px;
+  --workspace-bg: none;
   color: var(--ink);
   background: var(--bg-0);
   font-family: var(--font-body);
@@ -79,6 +80,189 @@ body {
   color: var(--ink);
 }
 
+/* —— Boot loader (futuristic splash) —— */
+.app-loader-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(rgba(0, 242, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 242, 255, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 65% at 50% 45%, black, transparent);
+}
+
+.app-loader-scan {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 242, 255, 0.04) 2px,
+    rgba(0, 242, 255, 0.04) 3px
+  );
+  animation: app-loader-scan 6s linear infinite;
+  pointer-events: none;
+}
+
+.app-loader-glow {
+  position: absolute;
+  width: min(90vw, 520px);
+  height: min(90vw, 520px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 242, 255, 0.12), transparent 68%);
+  filter: blur(40px);
+  animation: app-loader-pulse 2.8s ease-in-out infinite;
+}
+
+.app-loader-panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  width: min(92vw, 22rem);
+  padding: 1.75rem 1.5rem 1.35rem;
+  text-align: center;
+  background: rgba(4, 10, 22, 0.72);
+  border: 1px solid rgba(0, 242, 255, 0.28);
+  box-shadow:
+    0 0 0 1px rgba(0, 242, 255, 0.08) inset,
+    0 24px 64px rgba(0, 0, 0, 0.55),
+    0 0 48px rgba(0, 242, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.app-loader-panel::before,
+.app-loader-panel::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(0, 242, 255, 0.55);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.app-loader-panel::before {
+  top: 0.5rem;
+  left: 0.5rem;
+  border-width: 2px 0 0 2px;
+}
+
+.app-loader-panel::after {
+  bottom: 0.5rem;
+  right: 0.5rem;
+  border-width: 0 2px 2px 0;
+}
+
+.app-loader-ring-wrap {
+  position: relative;
+  width: 7.5rem;
+  height: 7.5rem;
+}
+
+.app-loader-ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.app-loader-ring-bg {
+  fill: none;
+  stroke: rgba(0, 242, 255, 0.12);
+  stroke-width: 3;
+}
+
+.app-loader-ring-fg {
+  fill: none;
+  stroke: #00f2ff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 326.73;
+  stroke-dashoffset: 326.73;
+  filter: drop-shadow(0 0 8px rgba(0, 242, 255, 0.65));
+  transition: stroke-dashoffset 0.15s ease-out;
+}
+
+.app-loader-percent {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  text-shadow: 0 0 16px var(--accent-glow);
+}
+
+.app-loader-brand {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: var(--ink);
+}
+
+.app-loader-sub {
+  margin-top: -0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+
+.app-loader-status {
+  min-height: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(0, 242, 255, 0.85);
+}
+
+.app-loader-track {
+  width: 100%;
+  height: 3px;
+  margin-top: 0.25rem;
+  background: rgba(0, 242, 255, 0.12);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.app-loader-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #00c5e0, #00f2ff, #5b8cff);
+  box-shadow: 0 0 12px rgba(0, 242, 255, 0.55);
+  transition: width 0.15s ease-out;
+}
+
+@keyframes app-loader-scan {
+  0% {
+    transform: translateY(-8%);
+  }
+  100% {
+    transform: translateY(8%);
+  }
+}
+
+@keyframes app-loader-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
 /* Fixed cyberpunk workspace backdrop */
 body::before {
   content: '';
@@ -88,6 +272,11 @@ body::before {
   z-index: 0;
   background: var(--workspace-bg) center center / cover no-repeat;
   transform: translateZ(0);
+  transition: opacity 0.6s ease;
+}
+
+body.workspace-ready::before {
+  opacity: 1;
 }
 
 body::after {
@@ -1828,6 +2017,11 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .app-loader-scan,
+  .app-loader-glow {
+    animation: none;
+  }
+
   .section-scroll::after {
     animation: none;
   }
