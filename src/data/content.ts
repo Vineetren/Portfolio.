@@ -1,12 +1,18 @@
+const resumeUrl =
+  'https://drive.google.com/file/d/1cMnRWreq7c_usZPFLT37_PTSsmMkDszJ/view?usp=drive_link'
+
 export const profile = {
   name: 'Vineet Joshi',
-  title: 'AI Fullstack Engineer',
+  portrait: '/portrait.png',
+  portraitAlt: 'Portrait of Vineet Joshi',
+  title: 'AI Engineer',
   tagline:
-    'I design and ship production Generative AI systems — RAG pipelines, agentic workflows, and secure backends that hold up in the real world.',
+    'I ship production AI end to end—agentic systems, RAG, and backends built to scale.',
+  heroQuote: 'The best way to predict the future is to build it.',
   email: 'joshivineet229@gmail.com',
   phone: '+91-7253072003',
   phoneHref: 'tel:+917253072003',
-  location: 'Gurugram, India',
+  resumeUrl,
   summary:
     'AI Fullstack Engineer with 1+ year of experience building production-ready Generative AI and backend systems using RAG, LangChain, LangGraph, and MCP. Delivered 5+ enterprise-grade applications that improved system performance, security, and automation by 25–45%, from system design through deployment.',
   socials: [
@@ -15,8 +21,19 @@ export const profile = {
       label: 'LinkedIn',
       href: 'https://www.linkedin.com/in/vineet-joshi-034325281',
     },
+    { label: 'Resume', href: resumeUrl },
   ],
 }
+
+export const heroHudStack = [
+  'RAG',
+  'LANGCHAIN',
+  'LANGGRAPH',
+  'MCP',
+  'PYTHON',
+  'JAVA',
+  'AWS',
+]
 
 export const skills = [
   {
@@ -109,50 +126,26 @@ export const experience = [
   },
 ]
 
-export const impact = [
-  {
-    metric: '25–45%',
-    label: 'Gains in performance, security & automation across shipped systems',
-  },
-  {
-    metric: '5+',
-    label: 'Enterprise-grade AI and backend applications delivered end-to-end',
-  },
-  {
-    metric: '95%',
-    label: 'Reduction in unsafe LLM outputs via production guardrails',
-  },
-  {
-    metric: '1,000+',
-    label: 'Signals/sec processed in real-time industrial monitoring',
-  },
-]
-
-export const education = [
-  {
-    school: 'Birla Institute of Applied Sciences, Bhimtal',
-    credential: 'Bachelor of Technology',
-    year: '2025',
-    detail: '80%',
-  },
-  {
-    school: 'Lakes International School, Bhimtal',
-    credential: 'Intermediate',
-    year: '2021',
-    detail: '89.6%',
-  },
-  {
-    school: 'Lakes International School, Bhimtal',
-    credential: 'High School',
-    year: '2019',
-    detail: '94.6%',
-  },
-]
+export const agentSection = {
+  eyebrow: 'Agent',
+  title: 'Your cyber workspace companion.',
+  lead:
+    'A live 3D agent in the stack — orbit the model, hover to wave, and explore how I think about interactive AI surfaces.',
+  copy:
+    'I treat agents as product surfaces: grounded tools, clear status, and motion that signals when the system is listening. This demo runs the same WebGL pipeline I use for immersive portfolio and assistant UIs.',
+  capabilities: [
+    'Mixamo-driven idle & wave animations',
+    'Cyber material pass on the mesh',
+    'Orbit controls with camera fit to visible geometry',
+    'Lazy-loaded when you scroll here',
+  ],
+  hint: 'Drag to rotate · Hover or tap the viewport to engage',
+}
 
 export const navLinks = [
   { label: 'About', href: '#about' },
+  { label: 'Agent', href: '#agent' },
   { label: 'Expertise', href: '#expertise' },
   { label: 'Experience', href: '#experience' },
-  { label: 'Impact', href: '#impact' },
   { label: 'Contact', href: '#contact' },
 ]

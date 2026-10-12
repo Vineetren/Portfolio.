@@ -1,14 +1,18 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import {
-  education,
   experience,
-  impact,
+  heroHudStack,
   navLinks,
   profile,
   skills,
 } from './data/content'
+import { SectionScrollLink } from './components/SectionScrollLink'
 import './index.css'
+
+const AgentSection = lazy(() =>
+  import('./components/chappie/AgentSection').then((m) => ({ default: m.AgentSection })),
+)
 
 function Reveal({
   children,
@@ -104,6 +108,15 @@ function Nav() {
             </li>
           ))}
         </ul>
+        <a
+          className="nav-resume"
+          href={profile.resumeUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => setOpen(false)}
+        >
+          Resume
+        </a>
         <a className="nav-cta" href="#contact" onClick={() => setOpen(false)}>
           Let&apos;s talk
         </a>
@@ -125,27 +138,22 @@ function Hero() {
 
   return (
     <section className="hero" id="top">
+      <div className="hero-workspace-vignette" aria-hidden />
       <div className="hero-atmosphere" aria-hidden>
         <div className="orb orb-a" />
         <div className="orb orb-b" />
         <div className="signal" />
       </div>
-      <div className="container hero-content">
-        <motion.p
-          className="eyebrow"
-          initial={reduce ? false : { opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.05 }}
-        >
-          Portfolio · Generative AI Systems
-        </motion.p>
+      <div className="container hero-layout">
+        <div className="hero-copy">
         <motion.h1
           className="hero-brand"
           initial={reduce ? false : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
         >
-          {profile.name}
+          <span className="hero-greeting">Hi, I&apos;m</span>
+          <span className="hero-name">{profile.name}</span>
         </motion.h1>
         <motion.p
           className="hero-title"
@@ -175,17 +183,15 @@ function Hero() {
           <a className="btn btn-ghost" href={`mailto:${profile.email}`}>
             Get in touch
           </a>
+          <a
+            className="btn btn-ghost"
+            href={profile.resumeUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Resume
+          </a>
         </motion.div>
-        <motion.a
-          className="hero-scroll"
-          href="#about"
-          aria-label="Scroll to about section"
-          initial={reduce ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.65 }}
-        >
-          <span>Scroll</span>
-        </motion.a>
         <motion.div
           className="hero-meta"
           initial={reduce ? false : { opacity: 0 }}
@@ -193,16 +199,71 @@ function Hero() {
           transition={{ duration: 0.8, delay: 0.55 }}
         >
           <span>
-            <i /> RAG · Agents · MCP
+            <i aria-hidden /> RAG
           </span>
           <span>
-            <i /> Production systems
+            <i aria-hidden /> Agents
           </span>
           <span>
-            <i /> {profile.location}
+            <i aria-hidden /> MCP
+          </span>
+          <span>
+            <i aria-hidden /> Production systems
           </span>
         </motion.div>
+        </div>
+        <motion.figure
+          className="hero-portrait"
+          initial={reduce ? false : { opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.85, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="hero-portrait-frame">
+            <img
+              src={profile.portrait}
+              alt={profile.portraitAlt}
+              width={420}
+              height={520}
+              fetchPriority="high"
+            />
+            <div className="hero-portrait-scan" aria-hidden />
+          </div>
+          <figcaption>
+            <span className="hero-portrait-id">ID // VJ-01</span>
+            <span className="hero-portrait-status">
+              <i aria-hidden /> Agent stack active
+            </span>
+          </figcaption>
+        </motion.figure>
+        <motion.aside
+          className="hero-hud"
+          initial={reduce ? false : { opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, delay: 0.35 }}
+          aria-label="Generative AI stack"
+        >
+          <p className="hero-hud-title">Generative AI</p>
+          <ul>
+            {heroHudStack.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          <div className="hero-hud-terminal" aria-hidden>
+            <span>&gt; create()</span>
+            <span>&gt; build()</span>
+            <span>&gt; improve()</span>
+            <span>&gt; repeat()</span>
+          </div>
+        </motion.aside>
       </div>
+      <motion.div
+        className="section-scroll-anchor"
+        initial={reduce ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.65 }}
+      >
+        <SectionScrollLink href="#about" label="About" />
+      </motion.div>
     </section>
   )
 }
@@ -236,6 +297,15 @@ function ContactPanel() {
             <span>{profile.email}</span>
             <span>{copied ? 'Copied' : 'Copy email'}</span>
           </button>
+          <a
+            className="contact-link"
+            href={profile.resumeUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span>Resume (PDF)</span>
+            <span>View</span>
+          </a>
           <a className="contact-link" href={`mailto:${profile.email}`}>
             <span>Send a message</span>
             <span>Email</span>
@@ -245,7 +315,7 @@ function ContactPanel() {
             <span>Phone</span>
           </a>
           {profile.socials
-            .filter((s) => s.label !== 'Email')
+            .filter((s) => s.label !== 'Email' && s.label !== 'Resume')
             .map((s) => (
               <a
                 key={s.label}
@@ -298,7 +368,12 @@ export default function App() {
               </Reveal>
             </div>
           </div>
+          <SectionScrollLink href="#agent" label="Agent" />
         </section>
+
+        <Suspense fallback={null}>
+          <AgentSection />
+        </Suspense>
 
         <section className="section" id="expertise">
           <div className="container">
@@ -325,6 +400,7 @@ export default function App() {
               ))}
             </div>
           </div>
+          <SectionScrollLink href="#experience" label="Experience" />
         </section>
 
         <section className="section" id="experience">
@@ -356,53 +432,7 @@ export default function App() {
               ))}
             </div>
           </div>
-        </section>
-
-        <section className="section impact-band" id="impact">
-          <div className="container">
-            <Reveal className="section-head">
-              <p className="eyebrow">Impact</p>
-              <h2>Results that compound.</h2>
-              <p>
-                Outcomes from production AI platforms, agent tooling, and
-                backend systems shipped end-to-end.
-              </p>
-            </Reveal>
-            <div className="impact-grid">
-              {impact.map((item, i) => (
-                <Reveal key={item.label} delay={i * 0.07}>
-                  <div className="impact-item">
-                    <strong>{item.metric}</strong>
-                    <span>{item.label}</span>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section" id="education">
-          <div className="container">
-            <Reveal className="section-head">
-              <p className="eyebrow">Education</p>
-              <h2>Academic foundation.</h2>
-            </Reveal>
-            <div className="edu-list">
-              {education.map((item, i) => (
-                <Reveal key={item.school + item.year} delay={i * 0.05}>
-                  <div className="edu-item">
-                    <div>
-                      <h3>{item.school}</h3>
-                      <p>{item.credential}</p>
-                    </div>
-                    <p className="edu-meta">
-                      {item.year} · {item.detail}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
+          <SectionScrollLink href="#contact" label="Contact" />
         </section>
 
         <ContactPanel />
@@ -413,6 +443,7 @@ export default function App() {
           <p>
             <strong>{profile.name}</strong> — {profile.title}
           </p>
+          <p className="footer-quote">{profile.heroQuote}</p>
           <p>© {new Date().getFullYear()}</p>
         </div>
       </footer>

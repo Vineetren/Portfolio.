@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local transcript / extract artifacts
+_extract-*
+_chappie-*
+_all-agent-css.txt
